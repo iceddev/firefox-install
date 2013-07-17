@@ -16,8 +16,8 @@ define(function(req){
 
   function createRibbon(){
     var installRibbon = document.createElement('span');
-    installRibbon.classList.add('install');
-    installRibbon.classList.add('show');
+    installRibbon.classList.add('ff-install');
+    installRibbon.classList.add('ff-show');
     return installRibbon;
   }
 
@@ -31,11 +31,11 @@ define(function(req){
       var install = navigator.mozApps.install(manifestUrl);
       console.log(install);
       install.addEventListener('success', function(){
-        this.parentNode.classList.remove('show');
+        this.parentNode.classList.remove('ff-show');
       });
       install.addEventListener('error', function(){
         console.error('Error Installing App: ', install.error.name);
-        this.parentNode.classList.add('error');
+        this.parentNode.classList.add('ff-error');
         this.textContent = 'Install Failed';
       });
     });
