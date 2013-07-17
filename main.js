@@ -1,8 +1,18 @@
-define(function(){
+define(function(req){
 
   'use strict';
 
+  var cssUrl = req.toUrl('./ribbon.css');
+
   var manifestUrl = location.href.substring(0, location.href.lastIndexOf('/')) + '/manifest.webapp';
+
+  function importCSS(){
+    var link = document.createElement('link');
+    link.href = cssUrl;
+    link.type = 'text/css';
+    link.rel = 'stylesheet';
+    return link;
+  }
 
   function createRibbon(){
     var installRibbon = document.createElement('span');
@@ -33,6 +43,8 @@ define(function(){
   }
 
   function createInstall(){
+    var head = document.getElementsByTagName('head')[0];
+    head.insertBefore(importCSS(), head.firstChild);
     var body = document.body;
     var installRibbon = createRibbon();
     var installLink = createLink();
