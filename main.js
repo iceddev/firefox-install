@@ -1,0 +1,70 @@
+define(function(){
+
+  'use strict';
+
+  var manifestUrl = location.href.substring(0, location.href.lastIndexOf('/')) + '/manifest.webapp';
+
+  function createRibbon(){
+    var installRibbon = document.createElement('span');
+    installRibbon.classList.add('install');
+    installRibbon.classList.add('show');
+    return installRibbon;
+  }
+
+  function createLink(){
+    var installLink = document.createElement('a');
+    installLink.href = '#';
+    installLink.textContent = 'Install w/ Firefox';
+    installLink.addEventListener('click', function(e){
+      e.preventDefault();
+      e.stopPropagation();
+      var install = navigator.mozApps.install(manifestUrl);
+      console.log(install);
+      install.addEventListener('success', function(){
+        this.parentNode.classList.remove('show');
+      });
+      install.addEventListener('error', function(){
+        console.error('Error Installing App: ', install.error.name);
+        this.parentNode.classList.add('error');
+        this.textContent = 'Install Failed';
+      });
+    });
+    return installLink;
+  }
+
+  function createInstall(){
+    var body = document.body;
+    var installRibbon = createRibbon();
+    var installLink = createLink();
+    installRibbon.appendChild(installLink);
+    body.insertBefore(installRibbon, body.firstChild);
+    return installRibbon;
+  }
+
+  function checkInstalled(){
+    var installed = navigator.mozApps.checkInstalled(manifestUrl);
+    installed.addEventListener('success', function(){
+      console.log(installed);
+      if(!installed.result){
+        createInstall();
+      }
+    });
+  }
+
+  function checkIsApp(){
+    var isApp = navigator.mozApps.getSelf();
+    isApp.addEventListener('success', function(){
+      if(!isApp.result){
+        checkInstalled();
+      }
+    });
+    isApp.addEventListener('error', function(){
+      console.error('Error Verifying App: ', isApp.error.name);
+    });
+  }
+
+  if(navigator.mozApps){
+    checkIsApp();
+  }
+
+});
