@@ -30,12 +30,13 @@ define(function(req){
       e.stopPropagation();
       var install = navigator.mozApps.install(manifestUrl);
       console.log(install);
+      var installRibbon = installLink.parentNode;
       install.addEventListener('success', function(){
-        this.parentNode.classList.remove('ff-show');
+        installRibbon.classList.remove('ff-show');
       });
       install.addEventListener('error', function(){
         console.error('Error Installing App: ', install.error.name);
-        this.parentNode.classList.add('ff-error');
+        installRibbon.classList.add('ff-error');
         this.textContent = 'Install Failed';
       });
     });
